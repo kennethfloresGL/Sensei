@@ -44,7 +44,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Task2Theme {
-                var newName by remember { mutableStateOf("") }
+                var emailOrPhoneNumber by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
 
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,8 +65,8 @@ class MainActivity : ComponentActivity() {
 
                     // Email or phone number
                     TextField(
-                        value = newName,
-                        onValueChange = { newName = it },
+                        value = emailOrPhoneNumber,
+                        onValueChange = { emailOrPhoneNumber = it },
                         label = { Text("Email or phone number") },
                         modifier = Modifier
                             .padding(15.dp)
@@ -75,8 +76,8 @@ class MainActivity : ComponentActivity() {
 
                     // Password
                     TextField(
-                        value = newName,
-                        onValueChange = { newName = it },
+                        value = password,
+                        onValueChange = { password = it },
                         label = { Text("Password") },
                         modifier = Modifier
                             .padding(15.dp)
@@ -152,7 +153,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     Task2Theme {
-        var newName by remember { mutableStateOf("") }
+        var emailOrPhoneNumber by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
 
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -165,15 +167,15 @@ fun GreetingPreview() {
                 text = "facebook",
                 modifier = Modifier
                     .padding(top = 200.dp),
-                    color = Color.White,
-                    fontSize = 50.sp,
-                    fontWeight = FontWeight.Bold
+                color = Color.White,
+                fontSize = 50.sp,
+                fontWeight = FontWeight.Bold
             )
 
             // Email or phone number
             TextField(
-                value = newName,
-                onValueChange = { newName = it },
+                value = emailOrPhoneNumber,
+                onValueChange = { emailOrPhoneNumber = it },
                 label = { Text("Email or phone number") },
                 modifier = Modifier
                     .padding(15.dp)
@@ -183,8 +185,8 @@ fun GreetingPreview() {
 
             // Password
             TextField(
-                value = newName,
-                onValueChange = { newName = it },
+                value = password,
+                onValueChange = { password = it },
                 label = { Text("Password") },
                 modifier = Modifier
                     .padding(15.dp)
@@ -192,6 +194,7 @@ fun GreetingPreview() {
                     .background(Color.White)
             )
 
+            // Button
             Button(
                 onClick = {
                     // Your login logic here
@@ -242,4 +245,3 @@ fun GreetingPreview() {
         }
     }
 }
-
