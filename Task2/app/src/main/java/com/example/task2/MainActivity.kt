@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,10 +53,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
+
 ) {
     Task2Theme {
-        var emailOrPhoneNumber by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        val uiState by viewModel.uiState.collectAsState()
 
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,8 +76,8 @@ fun MainScreen(
 
             // Email or phone number
             TextField(
-                value = emailOrPhoneNumber,
-                onValueChange = { emailOrPhoneNumber = it },
+                value = uiState.emailOrPhoneNumber,
+                onValueChange = { /*emailOrPhoneNumber = it*/ },
                 label = { Text("Email or phone number") },
                 modifier = Modifier
                     .padding(15.dp)
@@ -86,8 +87,8 @@ fun MainScreen(
 
             // Password
             TextField(
-                value = password,
-                onValueChange = { password = it },
+                value = uiState.password,
+                onValueChange = { /*password = it */},
                 label = { Text("Password") },
                 modifier = Modifier
                     .padding(15.dp)
