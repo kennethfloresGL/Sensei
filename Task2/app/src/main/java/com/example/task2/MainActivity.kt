@@ -20,9 +20,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +31,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.task2.ui.theme.Task2Theme
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,103 +46,142 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainContent(uiState: TaskUIState) {
+    ConstraintLayout (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.background))
+    ) {
+        val (facebookText, email, password, login, signUp, help) = createRefs()
+        Text(
+            text = "facebook",
+            color = Color.White,
+            fontSize = 50.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.constrainAs(facebookText){
+                top.linkTo(parent.top)
+                //bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+
+            }.padding(32.dp)
+        )
+
+
+        TextField(
+            value = uiState.emailOrPhoneNumber,
+            onValueChange = { uiState.emailOrPhoneNumber = it },
+            label = { Text("Email or phone number") },
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth()
+                .background(Color.White).constrainAs(email){
+                    top.linkTo(facebookText.bottom)
+                    //bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
+
+        TextField(
+            value = uiState.password,
+            onValueChange = { uiState.password = it},
+            label = { Text("Password") },
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .fillMaxWidth()
+                .background(Color.White).constrainAs(password){
+                    top.linkTo(email.bottom)
+                    //bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
+
+
+        Button(
+            onClick = {
+                // Your login logic here
+            },
+            colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200)),
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth().constrainAs(login){
+                    top.linkTo(password.bottom)
+                    //bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        ) {
+            Text("Log In", color = Color.White)
+        }
+
+        ClickableText(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = Color.White)) {
+                    append("Sign Up for Facebook")
+                }
+                addStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://www.facebook.com/signup",
+                    start = 0,
+                    end = length
+                )
+            },
+            onClick = {// Your logic here
+            },
+            modifier = Modifier
+                .padding(15.dp)
+                .constrainAs(signUp){
+                    top.linkTo(login.bottom)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(help.start)
+                }
+        )
+
+        ClickableText(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = Color.White)) {
+                    append("Need Help?")
+                }
+                addStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://www.facebook.com/help",
+                    start = 0,
+                    end = length
+                )
+            },
+            onClick = {// Your logic here
+            },
+            modifier = Modifier
+                .padding(15.dp)
+                .constrainAs(help){
+                    top.linkTo(login.bottom)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(signUp.end)
+                    end.linkTo(parent.end)
+                }
+        )
+    }
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 
+
+
 ) {
     Task2Theme {
         val uiState by viewModel.uiState.collectAsState()
+        MainContent(uiState)
 
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.background))
-        ) {
-            Text(
-                text = "facebook",
-                modifier = Modifier
-                    .padding(top = 200.dp),
-                color = Color.White,
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Bold
-            )
 
-            // Email or phone number
-            TextField(
-                value = uiState.emailOrPhoneNumber,
-                onValueChange = { /*emailOrPhoneNumber = it*/ },
-                label = { Text("Email or phone number") },
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .background(Color.White)
-            )
-
-            // Password
-            TextField(
-                value = uiState.password,
-                onValueChange = { /*password = it */},
-                label = { Text("Password") },
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .background(Color.White)
-            )
-
-            // Button
-            Button(
-                onClick = {
-                    // Your login logic here
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200)),
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-            ) {
-                Text("Log In", color = Color.White)
-            }
-
-            // Sign Up for Facebook
-            ClickableText(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("Sign Up for Facebook")
-                    }
-                    addStringAnnotation(
-                        tag = "URL",
-                        annotation = "https://www.facebook.com/signup",
-                        start = 0,
-                        end = length
-                    )
-                },
-                onClick = {// Your logic here
-                },
-                modifier = Modifier.padding(top = 100.dp)
-            )
-
-            // Need Help?
-            ClickableText(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("Need Help?")
-                    }
-                    addStringAnnotation(
-                        tag = "URL",
-                        annotation = "https://www.facebook.com/help",
-                        start = 0,
-                        end = length
-                    )
-                },
-                onClick = {// Your logic here
-                },
-                modifier = Modifier.padding(16.dp)
-            )
-        }
     }
 }
 
@@ -162,97 +199,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    Task2Theme {
-        var emailOrPhoneNumber by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.background))
-        ) {
-            Text(
-                text = "facebook",
-                modifier = Modifier
-                    .padding(top = 200.dp),
-                color = Color.White,
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            // Email or phone number
-            TextField(
-                value = emailOrPhoneNumber,
-                onValueChange = { emailOrPhoneNumber = it },
-                label = { Text("Email or phone number") },
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .background(Color.White)
-            )
-
-            // Password
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .background(Color.White)
-            )
-
-            // Button
-            Button(
-                onClick = {
-                    // Your login logic here
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200)),
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-            ) {
-                Text("Log In", color = Color.White)
-            }
-
-            // Sign Up for Facebook
-            ClickableText(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("Sign Up for Facebook")
-                    }
-                    addStringAnnotation(
-                        tag = "URL",
-                        annotation = "https://www.facebook.com/signup",
-                        start = 0,
-                        end = length
-                    )
-                },
-                onClick = {// Your logic here
-                },
-                modifier = Modifier.padding(top = 100.dp)
-            )
-
-            // Need Help?
-            ClickableText(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("Need Help?")
-                    }
-                    addStringAnnotation(
-                        tag = "URL",
-                        annotation = "https://www.facebook.com/help",
-                        start = 0,
-                        end = length
-                    )
-                },
-                onClick = {// Your logic here
-                },
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
+fun MainScreenPreview() {
+    val taskUIState = TaskUIState("email@email.com","Password")
+    MainContent(taskUIState)
 }
